@@ -1,10 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styles: [
+    `
+      .list-group-item:first-child {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top: 0;
+      }
+    `
+  ]
 })
-export class AppComponent {
-  title = 'learnangular5';
+export class AppComponent implements OnInit {
+  query: string;
+  artists: object;
+  currentArtist: object;
+
+  // when an artist is clicked
+  showArtist(item) {
+    this.query = item.name;
+    // create  toggle for the 'highlight' property
+    item.highlight = !item.highlight;
+    this.currentArtist = item;
+  }
+
+  constructor( private http: HttpClient) {
+    // this.query can be initializied to any type of string, like 'Barot'
+    this.query = '';
+  }
+
+  ngOnInit(): void {
+    this.http.get<object>('../assets/data.json').subscribe(
+      data => {
+        this.artists = data;
+      }
+    )
+  }
+
 }
